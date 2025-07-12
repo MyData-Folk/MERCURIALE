@@ -22,15 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('data/mercuriale-washington.json').then(r => r.json())
     ])
     .then(([folkestone, vendome, washington]) => {
-        dataFolkestone = folkestone;
-        dataVendome = vendome;
-        dataWashington = washington;
+        dataFolkestone = folkestone.map(x => ({...x, _source: 'Folkestone'}));
+        dataVendome = vendome.map(x => ({...x, _source: 'Vendôme'}));
+        dataWashington = washington.map(x => ({...x, _source: 'Washington'}));
         updateCurrentData();
-        console.log("Données chargées avec succès !");
     })
     .catch(error => {
         console.error("Erreur de chargement des fichiers JSON:", error);
-        searchResultsContainer.innerHTML = `<p class="placeholder" style="color: red;">Erreur : Impossible de charger les fichiers de données. <br> Démarrez l'application via un serveur local (ex: python -m http.server)</p>`;
+        searchResultsContainer.innerHTML = `<p class="placeholder" style="color: red;">Erreur : Impossible de charger les fichiers de données.<br>Vérifiez les fichiers dans <b>data/</b> et démarrez via un serveur local (<code>python -m http.server</code>)</p>`;
     });
 
     // --- GESTIONNAIRES D'ÉVÉNEMENTS ---
@@ -83,9 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCurrentData() {
         const selectedSources = getSelectedSources();
         let mergedData = [];
-        if (selectedSources.includes('folkestone')) mergedData = mergedData.concat(dataFolkestone.map(x => ({...x, _source: 'Folkestone'})));
-        if (selectedSources.includes('vendome')) mergedData = mergedData.concat(dataVendome.map(x => ({...x, _source: 'Vendôme'})));
-        if (selectedSources.includes('washington')) mergedData = mergedData.concat(dataWashington.map(x => ({...x, _source: 'Washington'})));
+        if (selectedSources.includes('folkestone')) mergedData = mergedData.concat(dataFolkestone);
+        if (selectedSources.includes('vendome')) mergedData = mergedData.concat(dataVendome);
+        if (selectedSources.includes('washington')) mergedData = mergedData.concat(dataWashington);
         currentData = mergedData;
         if (currentData.length > 0) {
             dataHeaders = Object.keys(currentData[0]).filter(h => h !== '_source');
