@@ -2,47 +2,44 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>MERCURIALE - Commande Fournisseur</title>
+    <title>MERCURIALE – Comparateur & Commande</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Google Fonts (pro/prestige) -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>MERCURIALE</h1>
-        <p>Comparez les mercuriales et préparez votre commande fournisseur</p>
-    </header>
+    <main class="main-centered">
+        <section class="app-card">
+            <header>
+                <h1>MERCURIALE</h1>
+                <p class="subtitle">Comparez vos mercuriales, préparez et exportez votre commande fournisseur</p>
+            </header>
 
-    <main>
-        <section class="search-section">
-            <div class="sources">
-                <label><input type="checkbox" name="source" value="folkestone" checked> Folkestone</label>
-                <label><input type="checkbox" name="source" value="vendome" checked> Vendôme</label>
-                <label><input type="checkbox" name="source" value="washington" checked> Washington</label>
-            </div>
-            <input type="text" id="searchInput" placeholder="Rechercher un produit (nom ou code)...">
-        </section>
+            <section class="search-block">
+                <div class="sources">
+                    <label><input type="checkbox" name="source" value="folkestone" checked> Folkestone</label>
+                    <label><input type="checkbox" name="source" value="vendome" checked> Vendôme</label>
+                    <label><input type="checkbox" name="source" value="washington" checked> Washington</label>
+                </div>
+                <input type="text" id="searchInput" placeholder="Recherche produit (code ou libellé)..." autocomplete="off">
+            </section>
 
-        <section>
-            <div id="searchResults" class="results-table"></div>
-        </section>
+            <div id="searchResults"></div>
 
-        <section>
-            <h2>Ma commande</h2>
-            <div id="orderList" class="order-table"></div>
-            <div class="export-buttons">
-                <button id="downloadCsvBtn" class="btn-3d" disabled>Exporter CSV</button>
-                <button id="downloadXlsxBtn" class="btn-3d" disabled>Exporter XLSX</button>
-            </div>
+            <section class="commande-block">
+                <h2>Ma commande</h2>
+                <div id="orderList"></div>
+                <div class="export-buttons">
+                    <button id="downloadCsvBtn" class="btn-3d" disabled>Exporter CSV</button>
+                    <button id="downloadXlsxBtn" class="btn-3d" disabled>Exporter XLSX</button>
+                </div>
+            </section>
         </section>
+        <footer>
+            <small>© 2025 MERCURIALE – MyData-Folk</small>
+        </footer>
     </main>
-
-    <footer>
-        <small>© 2025 MERCURIALE - MyData-Folk</small>
-    </footer>
-
-    <!-- SheetJS pour export XLSX -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
