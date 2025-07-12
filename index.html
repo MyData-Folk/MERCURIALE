@@ -4,51 +4,561 @@
     <meta charset="UTF-8">
     <title>MERCURIALE – Comparateur & Commande</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #4f46e5, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .table-container::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a5b4fc;
+        }
+        .search-highlight {
+            background-color: #e0e7ff;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+    </style>
 </head>
-<body>
-    <main class="main-centered">
-        <section class="app-card">
-            <header>
-                <h1>MERCURIALE</h1>
-                <p class="subtitle">Comparez vos mercuriales, préparez et exportez votre commande fournisseur</p>
-            </header>
-
-            <section class="search-block">
-                <div class="sources">
-                    <label><input type="checkbox" name="source" value="folkestone" checked> Folkestone</label>
-                    <label><input type="checkbox" name="source" value="vendome" checked> Vendôme</label>
-                    <label><input type="checkbox" name="source" value="washington" checked> Washington</label>
+<body class="antialiased">
+    <div class="min-h-screen flex flex-col items-center justify-center py-8 px-4">
+        <div class="w-full max-w-6xl bg-white rounded-xl shadow-xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold flex items-center">
+                            <i class="fas fa-store-alt mr-3"></i>
+                            <span>MERCURIALE</span>
+                        </h1>
+                        <p class="text-blue-100 mt-1">Comparez vos mercuriales, préparez et exportez votre commande fournisseur</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="flex space-x-2">
+                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full flex items-center">
+                                <i class="fas fa-database mr-1"></i>
+                                <span>3 sources</span>
+                            </span>
+                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full flex items-center">
+                                <i class="fas fa-boxes mr-1"></i>
+                                <span id="productCount">0 produits</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="search-row">
-                    <input type="text" id="searchInput" placeholder="Recherche produit..." autocomplete="off">
-                    <select id="searchField">
-                        <option value="all" selected>Tous les champs</option>
-                        <option value="Libellé produit">Libellé produit</option>
-                        <option value="Marque">Marque</option>
-                        <option value="Code Produit">Code Produit</option>
-                    </select>
-                </div>
-            </section>
+            </div>
 
-            <div id="searchResults"></div>
-
-            <section class="commande-block">
-                <h2>Ma commande</h2>
-                <div id="orderList"></div>
-                <div class="export-buttons">
-                    <button id="downloadCsvBtn" class="btn-3d" disabled>Exporter CSV</button>
-                    <button id="downloadXlsxBtn" class="btn-3d" disabled>Exporter XLSX</button>
+            <!-- Main Content -->
+            <div class="p-6">
+                <!-- Search Section -->
+                <div class="mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div class="flex flex-wrap gap-3">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="source" value="folkestone" checked class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                                <span class="ml-2 text-gray-700 font-medium">Folkestone</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="source" value="vendome" checked class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                                <span class="ml-2 text-gray-700 font-medium">Vendôme</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="source" value="washington" checked class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                                <span class="ml-2 text-gray-700 font-medium">Washington</span>
+                            </label>
+                        </div>
+                        
+                        <div class="relative w-full md:w-auto">
+                            <select id="searchField" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 pl-3 pr-10 text-base bg-gray-50">
+                                <option value="all" selected>Tous les champs</option>
+                                <option value="Libellé produit">Libellé produit</option>
+                                <option value="Marque">Marque</option>
+                                <option value="Code Produit">Code Produit</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchInput" placeholder="Rechercher un produit..." autocomplete="off" 
+                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
                 </div>
-            </section>
-        </section>
-        <footer>
-            <small>© 2025 MERCURIALE – MyData-Folk</small>
-        </footer>
-    </main>
+
+                <!-- Search Results -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-search mr-2 text-indigo-500"></i>
+                        Résultats de recherche
+                    </h2>
+                    <div id="searchResults" class="table-container border border-gray-200 rounded-lg overflow-hidden">
+                        <p class="text-center text-gray-500 py-8 px-4">
+                            Commencez à taper pour rechercher dans les mercuriales sélectionnées.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Order Section -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-shopping-cart mr-2 text-indigo-500"></i>
+                            Ma commande
+                            <span id="orderCount" class="ml-2 bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">0</span>
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button id="downloadCsvBtn" disabled class="btn-primary text-white px-4 py-2 rounded-md text-sm font-medium flex items-center">
+                                <i class="fas fa-file-csv mr-2"></i>
+                                CSV
+                            </button>
+                            <button id="downloadXlsxBtn" disabled class="btn-primary text-white px-4 py-2 rounded-md text-sm font-medium flex items-center">
+                                <i class="fas fa-file-excel mr-2"></i>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="orderList" class="table-container border border-gray-200 rounded-lg overflow-hidden">
+                        <p class="text-center text-gray-500 py-8 px-4">
+                            Aucun article ajouté pour le moment. Cliquez sur "Ajouter" dans les résultats de recherche.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-500">
+                    <div class="flex items-center justify-center md:justify-start mb-2 md:mb-0">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>© 2025 MERCURIALE – MyData-Folk</span>
+                    </div>
+                    <div class="flex items-center justify-center md:justify-end space-x-4">
+                        <a href="#" class="hover:text-indigo-600"><i class="fas fa-question-circle mr-1"></i> Aide</a>
+                        <a href="#" class="hover:text-indigo-600"><i class="fas fa-cog mr-1"></i> Paramètres</a>
+                        <a href="#" class="hover:text-indigo-600"><i class="fas fa-envelope mr-1"></i> Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SheetJS pour export XLSX -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchField = document.getElementById('searchField');
+        const sourceCheckboxes = document.querySelectorAll('input[name="source"]');
+        const searchResultsContainer = document.getElementById('searchResults');
+        const orderListContainer = document.getElementById('orderList');
+        const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+        const downloadXlsxBtn = document.getElementById('downloadXlsxBtn');
+        const orderCountElement = document.getElementById('orderCount');
+        const productCountElement = document.getElementById('productCount');
+
+        // Data
+        let dataFolkestone = [];
+        let dataVendome = [];
+        let dataWashington = [];
+        let currentData = [];
+        let orderList = [];
+        let dataHeaders = [];
+
+        // --- INITIALISATION : Charger les données ---
+        Promise.all([
+            fetch('data/mercuriale-folkestone.json').then(r => r.json()),
+            fetch('data/mercuriale-vendome.json').then(r => r.json()),
+            fetch('data/mercuriale-washington.json').then(r => r.json())
+        ])
+        .then(([folkestone, vendome, washington]) => {
+            dataFolkestone = folkestone.map(x => ({...x, _source: 'Folkestone'}));
+            dataVendome = vendome.map(x => ({...x, _source: 'Vendôme'}));
+            dataWashington = washington.map(x => ({...x, _source: 'Washington'}));
+            updateCurrentData();
+            updateProductCount();
+        })
+        .catch(error => {
+            console.error("Erreur de chargement des fichiers JSON:", error);
+            searchResultsContainer.innerHTML = `
+                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">
+                                Erreur : Impossible de charger les fichiers de données.<br>
+                                Vérifiez les fichiers dans <b>data/</b> et démarrez via un serveur local (<code>python -m http.server</code>)
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+        });
+
+        // --- GESTIONNAIRES D'ÉVÉNEMENTS ---
+        sourceCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                updateCurrentData();
+                searchInput.value = '';
+                displaySearchResults([]);
+                updateProductCount();
+            });
+        });
+
+        searchField.addEventListener('change', () => {
+            searchInput.dispatchEvent(new Event('input'));
+        });
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (query.length < 2) {
+                displaySearchResults([]);
+                return;
+            }
+            const field = searchField.value;
+            const results = currentData.filter(item => {
+                if (field === "all") {
+                    // Recherche sur les trois champs principaux
+                    const codeProduit = item["Code Produit"]?.toString().toLowerCase() || '';
+                    const libelleProduit = item["Libellé produit"]?.toString().toLowerCase() || '';
+                    const marque = item["Marque"]?.toString().toLowerCase() || '';
+                    return codeProduit.includes(query) || libelleProduit.includes(query) || marque.includes(query);
+                } else {
+                    const fieldValue = item[field]?.toString().toLowerCase() || '';
+                    return fieldValue.includes(query);
+                }
+            });
+            displaySearchResults(results, query);
+        });
+
+        searchResultsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-add') || e.target.closest('.btn-add')) {
+                const btn = e.target.classList.contains('btn-add') ? e.target : e.target.closest('.btn-add');
+                const productCode = btn.dataset.code;
+                const source = btn.dataset.source;
+                addProductToOrder(productCode, source);
+                
+                // Animation feedback
+                btn.innerHTML = '<i class="fas fa-check"></i> Ajouté';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('bg-green-500', 'hover:bg-green-600');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-plus mr-1"></i> Ajouter';
+                    btn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    btn.classList.add('btn-primary');
+                }, 1000);
+            }
+        });
+
+        orderListContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-remove') || e.target.closest('.btn-remove')) {
+                const btn = e.target.classList.contains('btn-remove') ? e.target : e.target.closest('.btn-remove');
+                const productCode = btn.dataset.code;
+                const source = btn.dataset.source;
+                removeProductFromOrder(productCode, source);
+            }
+        });
+
+        downloadCsvBtn.addEventListener('click', downloadOrderAsCSV);
+        downloadXlsxBtn.addEventListener('click', downloadOrderAsXLSX);
+
+        // --- FONCTIONS ---
+        function getSelectedSources() {
+            return Array.from(document.querySelectorAll('input[name="source"]:checked')).map(cb => cb.value);
+        }
+
+        function updateCurrentData() {
+            const selectedSources = getSelectedSources();
+            let mergedData = [];
+            if (selectedSources.includes('folkestone')) mergedData = mergedData.concat(dataFolkestone);
+            if (selectedSources.includes('vendome')) mergedData = mergedData.concat(dataVendome);
+            if (selectedSources.includes('washington')) mergedData = mergedData.concat(dataWashington);
+            currentData = mergedData;
+            if (currentData.length > 0) {
+                dataHeaders = Object.keys(currentData[0]).filter(h => h !== '_source');
+            }
+            updatePlaceholder();
+        }
+        
+        function updateProductCount() {
+            const count = currentData.length;
+            productCountElement.textContent = `${count} produit${count !== 1 ? 's' : ''}`;
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.toString().replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        function displaySearchResults(results, query = '') {
+            if (results.length === 0) {
+                if (searchInput.value.trim().length >= 2) {
+                    searchResultsContainer.innerHTML = `
+                        <div class="text-center py-8 px-4">
+                            <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                            <p class="text-gray-500">Aucun résultat trouvé pour "${searchInput.value}"</p>
+                        </div>`;
+                } else {
+                    updatePlaceholder();
+                }
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                            ${dataHeaders.map(header => `
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>
+                            `).join('')}
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${results.map(item => `
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        ${item._source === 'Folkestone' ? 'bg-blue-100 text-blue-800' : 
+                                          item._source === 'Vendôme' ? 'bg-purple-100 text-purple-800' : 
+                                          'bg-green-100 text-green-800'}">
+                                        ${item._source}
+                                    </span>
+                                </td>
+                                ${dataHeaders.map(header => `
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        ${highlightText(item[header] || '', query)}
+                                    </td>
+                                `).join('')}
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="btn-primary text-white px-3 py-1 rounded-md text-xs flex items-center btn-add" 
+                                            data-code="${item["Code Produit"]}" data-source="${item._source}">
+                                        <i class="fas fa-plus mr-1"></i> Ajouter
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+            searchResultsContainer.innerHTML = tableHTML;
+        }
+
+        function addProductToOrder(productCode, source) {
+            const productCodeStr = productCode.toString();
+            if (orderList.some(p => p["Code Produit"].toString() === productCodeStr && p._source === source)) {
+                showNotification(`Cet article de la mercuriale "${source}" est déjà dans la liste de commande.`, 'warning');
+                return;
+            }
+            const productToAdd = currentData.find(p => p["Code Produit"].toString() === productCodeStr && p._source === source);
+            if (productToAdd) {
+                orderList.push({...productToAdd});
+                renderOrderList();
+                showNotification('Article ajouté à la commande', 'success');
+            }
+        }
+
+        function removeProductFromOrder(productCode, source) {
+            const productCodeStr = productCode.toString();
+            const removedItem = orderList.find(p => p["Code Produit"].toString() === productCodeStr && p._source === source);
+            orderList = orderList.filter(p => !(p["Code Produit"].toString() === productCodeStr && p._source === source));
+            renderOrderList();
+            
+            if (removedItem) {
+                showNotification('Article retiré de la commande', 'info');
+            }
+        }
+
+        function renderOrderList() {
+            orderCountElement.textContent = orderList.length;
+            
+            if (orderList.length === 0) {
+                orderListContainer.innerHTML = `
+                    <div class="text-center py-8 px-4">
+                        <i class="fas fa-shopping-cart text-gray-400 text-4xl mb-3"></i>
+                        <p class="text-gray-500">Aucun article ajouté pour le moment. Cliquez sur "Ajouter" dans les résultats de recherche.</p>
+                    </div>`;
+                downloadCsvBtn.disabled = true;
+                downloadXlsxBtn.disabled = true;
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                            ${dataHeaders.map(header => `
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>
+                            `).join('')}
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${orderList.map(item => `
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        ${item._source === 'Folkestone' ? 'bg-blue-100 text-blue-800' : 
+                                          item._source === 'Vendôme' ? 'bg-purple-100 text-purple-800' : 
+                                          'bg-green-100 text-green-800'}">
+                                        ${item._source}
+                                    </span>
+                                </td>
+                                ${dataHeaders.map(header => `
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        ${item[header] || ''}
+                                    </td>
+                                `).join('')}
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs flex items-center btn-remove" 
+                                            data-code="${item["Code Produit"]}" data-source="${item._source}">
+                                        <i class="fas fa-trash-alt mr-1"></i> Retirer
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+            orderListContainer.innerHTML = tableHTML;
+            downloadCsvBtn.disabled = false;
+            downloadXlsxBtn.disabled = false;
+        }
+
+        function downloadOrderAsCSV() {
+            if (orderList.length === 0) return;
+            const headersWithSource = ['Source', ...dataHeaders];
+            const csvHeaders = headersWithSource.join(';');
+            const csvRows = orderList.map(row => {
+                const cells = [row._source, ...dataHeaders.map(header => {
+                    let cell = row[header] === null || row[header] === undefined ? '' : row[header];
+                    cell = cell.toString().replace(/"/g, '""');
+                    if (cell.includes(';') || cell.includes('"') || cell.includes('\n')) {
+                        cell = `"${cell}"`;
+                    }
+                    return cell;
+                })];
+                return cells.join(';');
+            });
+            const csvContent = "\uFEFF" + [csvHeaders, ...csvRows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `commande_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Export CSV téléchargé', 'success');
+        }
+
+        function downloadOrderAsXLSX() {
+            if (orderList.length === 0) return;
+            const wsData = [
+                ['Source', ...dataHeaders],
+                ...orderList.map(row => [row._source, ...dataHeaders.map(h => row[h] || '')])
+            ];
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Commande");
+            XLSX.writeFile(wb, `commande_${new Date().toISOString().slice(0,10)}.xlsx`);
+            
+            showNotification('Export Excel téléchargé', 'success');
+        }
+
+        function updatePlaceholder() {
+            const selected = getSelectedSources();
+            let sourceName = selected.length > 0
+                ? selected.map(src => ({
+                    'folkestone': 'Folkestone',
+                    'vendome': 'Vendôme',
+                    'washington': 'Washington'
+                })[src] || src).join(', ')
+                : 'aucune mercuriale';
+                
+            searchResultsContainer.innerHTML = `
+                <div class="text-center py-8 px-4">
+                    <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                    <p class="text-gray-500">Commencez à taper pour rechercher dans : <strong>${sourceName}</strong></p>
+                </div>`;
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'warning': 'bg-yellow-500',
+                'info': 'bg-blue-500'
+            };
+            
+            notification.className = `fixed bottom-4 right-4 text-white px-4 py-3 rounded-md shadow-lg flex items-center ${colors[type] || colors['info']}`;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                 type === 'error' ? 'fa-exclamation-circle' : 
+                                 type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} mr-2"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    });
+    </script>
 </body>
 </html>
