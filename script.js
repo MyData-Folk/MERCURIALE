@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const searchInput = document.getElementById('searchInput');
+    const searchField = document.getElementById('searchField');
     const sourceCheckboxes = document.querySelectorAll('input[name="source"]');
     const searchResultsContainer = document.getElementById('searchResults');
     const orderListContainer = document.getElementById('orderList');
@@ -41,16 +42,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    searchField.addEventListener('change', () => {
+        searchInput.dispatchEvent(new Event('input'));
+    });
+
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.trim().toLowerCase();
         if (query.length < 2) {
             displaySearchResults([]);
             return;
         }
+        const field = searchField.value;
         const results = currentData.filter(item => {
-            const codeProduit = item["Code Produit"]?.toString().toLowerCase() || '';
-            const libelleProduit = item["Libellé produit"]?.toString().toLowerCase() || '';
-            return codeProduit.includes(query) || libelleProduit.includes(query);
+            if (field === "all") {
+                // Recherche sur les trois champs principaux
+                const codeProduit = item["Code Produit"]?.toString().toLowerCase() || '';
+                const libelleProduit = item["Libellé produit"]?.toString().toLowerCase() || '';
+                const marque = item["Marque"]?.toString().toLowerCase() || '';
+                return codeProduit.includes(query) || libelleProduit.includes(query) || marque.includes(query);
+            } else {
+                const fieldValue = item[field]?.toString().toLowerCase() || '';
+                return fieldValue.includes(query);
+            }
         });
         displaySearchResults(results);
     });
