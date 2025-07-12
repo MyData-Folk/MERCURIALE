@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil de Commande Multi-Mercuriales</title>
+    <!-- Lien vers le nouveau fichier CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Police de caractères optionnelle pour un look plus moderne -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Outil de Commande</h1>
+            <p>Recherchez des articles et créez votre liste de commande à partir de plusieurs mercuriales.</p>
+        </header>
+
+        <div class="controls-container">
+            <!-- Section pour le choix de la source -->
+            <fieldset>
+                <legend>Choisir la mercuriale :</legend>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="source" value="folkestone" checked>
+                        Folkestone
+                    </label>
+                    <label>
+                        <input type="radio" name="source" value="vendome">
+                        Vendôme
+                    </label>
+                    <label>
+                        <input type="radio" name="source" value="washington">
+                        Washington
+                    </label>
+                </div>
+            </fieldset>
+
+            <!-- Section pour la recherche -->
+            <div class="search-wrapper">
+                <label for="searchInput" class="sr-only">Rechercher un produit</label>
+                <input type="text" id="searchInput" placeholder="Rechercher par code ou libellé...">
+            </div>
+        </div>
+
+        <main class="content-grid">
+            <!-- Section des résultats de recherche -->
+            <section id="searchResultsSection">
+                <h2>Résultats de la recherche</h2>
+                <div id="searchResults" class="table-container">
+                    <!-- Le JS insérera le placeholder ou le tableau ici -->
+                </div>
+            </section>
+
+            <!-- Section de la liste de commande -->
+            <section id="orderSection">
+                <h2>Votre Commande</h2>
+                <div id="orderList" class="table-container">
+                    <p class="placeholder">Aucun article ajouté pour le moment.</p>
+                </div>
+                <button id="downloadCsvBtn" disabled>Télécharger la commande (CSV)</button>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 - Votre Application de Commande</p>
+        </footer>
+    </div>
+
+    <!-- Le apparence plus moderne, claire et professionnelle.
+
+---
+
+### 1. Fichier HTML Amélioré (`index.html`)
+
+Cette version utilise des balises plus sémantiques (`<header>`, `<main>`, `<section>`, `<fieldset>`) pour une meilleure structure et accessibilité. J'ai également ajouté des titres et des libellés pour une meilleure expérience utilisateur.
+
+**Ce qu'il faut faire :** Remplacez le contenu de votre fichier `index.html` par celui-ci.
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionnaire de Commandes</title>
+    <!-- Lien vers le nouveau fichier CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Importation d'une police plus moderne (optionnel mais recommandé) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Gestionnaire de Commandes</h1>
+            <p>Recherchez un produit, ajoutez-le à votre commande et exportez le résultat.</p>
+        </header>
+
+        <main>
+            <!-- Section des contrôles (choix de la source et recherche) -->
+            <section class="card">
+                <h2>1. Recherche de produits</h2>
+                
+                <fieldset>
+                    <legend>Choisir la mercuriale :</legend>
+                    <div class="radio-group">
+                         script JS, chargé à la fin pour de meilleures performances -->
+    <script src="script.js"></script>
+</body>
+</html>
