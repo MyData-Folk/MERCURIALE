@@ -22,7 +22,15 @@
                     <label><input type="checkbox" name="source" value="vendome" checked> Vendôme</label>
                     <label><input type="checkbox" name="source" value="washington" checked> Washington</label>
                 </div>
-                <input type="text" id="searchInput" placeholder="Recherche produit (code ou libellé)..." autocomplete="off">
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="Recherche produit..." autocomplete="off">
+                    <select id="searchField">
+                        <option value="all" selected>Tous les champs</option>
+                        <option value="Libellé produit">Libellé produit</option>
+                        <option value="Marque">Marque</option>
+                        <option value="Code Produit">Code Produit</option>
+                    </select>
+                </div>
             </section>
 
             <div id="searchResults"></div>
